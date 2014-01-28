@@ -9,8 +9,3 @@ PictureElement
     <img src="http://retina-images.complexcompulsions.com/img/settings-small.png" />
 </picture>
 ```
-
-##The JavaScript Function
-```js
-picture();
-```

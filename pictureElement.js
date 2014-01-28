@@ -1,3 +1,5 @@
+pictureDebug = false;
+(function() {
 if (!window.matchMedia) {
     window.matchMedia = function (str) {
         return {
@@ -5,7 +7,6 @@ if (!window.matchMedia) {
         };
     };
 }
-var pictureDebug = false;
 var wc_list = [];
 window.renameSingle = function (elm, tag) {
     var replacement = document.createElement(tag);
@@ -23,7 +24,7 @@ window.renameSingle = function (elm, tag) {
 
 
 picture = function (debug) {
-    pictureDebug = (debug === true) ? true : false;
+    pictureDebug = (debug === true || pictureDebug === true) ? true : false;
     wc_list = [];
     var pictures = document.getElementsByTagName("picture");
     for (var i = 0; i < pictures.length; i++) {
@@ -107,4 +108,5 @@ function pictureNo(y) {
    
 }
 
-picture(true); //true = debug Mode (in console)
+picture(pictureDebug); //true = debug Mode (in console)
+})();

@@ -1,6 +1,7 @@
 PictureElement
 ==============
 
+#The HTML Element
 ```html
 <picture>
     <source src="http://retina-images.complexcompulsions.com/img/settings-large.png" media="(min-width : 500px)" />
@@ -9,7 +10,7 @@ PictureElement
 </picture>
 ```
 
-
+#The JQuery Function
 ```js
 $.picture();
 ```

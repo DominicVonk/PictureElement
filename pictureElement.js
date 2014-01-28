@@ -5,48 +5,37 @@ if (!window.matchMedia) {
         };
     };
 }
+var wc_list = [];
+window.renameSingle = function (elm, tag) {
+    var replacement = document.createElement(tag);
+    
+    for (var attribute = 0; attribute < elm.attributes.length; attribute++) {
+      
+        if (typeof elm.attributes[attribute].value !== "undefined" && typeof elm.attributes[attribute].name !== "undefined" && typeof elm.attributes[attribute].value !== "function") {
+            replacement.setAttribute(elm.attributes[attribute].name, elm.attributes[attribute].value);
+        }
+    }
+  
+    elm.parentNode.replaceChild(replacement, elm);
+    return replacement;
+};
 
-$.fn.renameTagName = function(tag){
-   // create the new, empty shim
-   var replacement = $('<' + tag + '>');
-   // empty container to hold attributes
-   var attributes = {};
-   // copy all the attributes to the shell
-   $.each(this.get(0).attributes, function(index, attribute) {
-       attributes[attribute.name] = attribute.value;
-   }); 
-   // assign attributes to replacement
-   replacement.attr(attributes);
-   // copy the data
-   replacement.data(this.data());
-   // get all the kids, with data and events
-   var contents = this.children().clone(true);
-   // inseminate
-   replacement.append(contents);
-   // swap it out
-   this.replaceWith(replacement);
-   // and we're done
-   return replacement;
-}
-function pictureYes(y) {
-                    if (y.matches) {
-                       $.picture();
-                    }
-    y.removeListener(pictureYes);
-}
-function pictureNo(y) {
-                    if (!y.matches) {
-                       $.picture();
-                    }
-   y.removeListener(pictureNo);
-}
-$.picture = function () {
-    $("picture").each(function (a, picture) {
+
+picture = function () {
+    var pictures = document.getElementsByTagName("picture");
+    for (var i = 0; i < pictures.length; i++) {
         var done = false;
         var query = "";
-        $(picture).children("img").renameTagName("source");
-        $(picture).children("source").each(function (b, source) {
-            var wc = !! ($(source).attr("media")) ? window.matchMedia($(source).attr("media")) : {
+        for (var img = 0; img < pictures[i].getElementsByTagName("img").length; img++) {
+            if (pictures[i].getElementsByTagName("img")[img]) {
+                window.renameSingle(pictures[i].getElementsByTagName("img")[img], "source");
+            }
+        }
+
+        for (var source = 0; source < pictures[i].getElementsByTagName("source").length; source++) {
+            var sourceElm = pictures[i].getElementsByTagName("source")[source];
+
+            var wc = sourceElm.hasAttribute("media") ? window.matchMedia(sourceElm.getAttribute("media")) : {
                 matches: false
             };
             if (wc.matches && !done) {
@@ -55,8 +44,9 @@ $.picture = function () {
                 } else {
                     query += ", " + wc.media;
                 }
-                $(source).renameTagName("img");
+                window.renameSingle(sourceElm, "img");
                 wc.addListener(pictureYes);
+                wc_list.push(wc);
                 done = true;
             } else if ( !! (wc.media)) {
                 if (query === "") {
@@ -65,21 +55,48 @@ $.picture = function () {
                     query += ", " + wc.media;
                 }
                 wc.addListener(pictureYes);
-            } else if (!done && !($(source).attr("media"))) {
+                wc_list.push(wc);
+            } else if (!done && !sourceElm.hasAttribute("media")) {
                 wc = window.matchMedia(query);
                 if ( !! (wc.media)) {
                     wc.addListener(pictureNo);
+                    wc_list.push(wc);
                 }
-                $(source).renameTagName("img");
+                window.renameSingle(sourceElm, "img");
                 done = true;
             } else {
                 wc = window.matchMedia(query);
                 if ( !! (wc.media)) {
                     wc.addListener(pictureNo);
+                    wc_list.push(wc);
                 }
             }
-        });
-    });
+
+        }
+    }
 };
 
-$.picture();
+function pictureYes(y) {
+    if (y.matches) {
+        for(var i = 0; i < wc_list.length; i++) {
+            wc_list[i].removeListener(pictureNo);
+            wc_list[i].removeListener(pictureYes);
+        }
+        picture();
+    }
+    
+}
+
+function pictureNo(y) {
+    
+    if (!y.matches) {
+        for(var i = 0; i < wc_list.length; i++) {
+            wc_list[i].removeListener(pictureNo);
+            wc_list[i].removeListener(pictureYes);
+        }
+        picture();
+        
+    }
+   
+}
+picture();

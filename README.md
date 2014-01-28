@@ -10,7 +10,7 @@ PictureElement
 </picture>
 ```
 
-#The JQuery Function
+#The jQuery Function
 ```js
 $.picture();
 ```

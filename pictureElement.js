@@ -1,6 +1,6 @@
 pictureDebug = false;
 (function () {
-    if (typeof (HTMLPictureElement) !== "undefined") {
+    if (typeof (HTMLPictureElement) === "undefined") {
         if (!window.matchMedia) {
             window.matchMedia = function (str) {
                 return {

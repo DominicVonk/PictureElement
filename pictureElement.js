@@ -22,6 +22,7 @@ window.renameSingle = function (elm, tag) {
 
 
 picture = function () {
+    wc_list = [];
     var pictures = document.getElementsByTagName("picture");
     for (var i = 0; i < pictures.length; i++) {
         var done = false;

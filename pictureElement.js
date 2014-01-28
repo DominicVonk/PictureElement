@@ -5,6 +5,7 @@ if (!window.matchMedia) {
         };
     };
 }
+var pictureDebug = false;
 var wc_list = [];
 window.renameSingle = function (elm, tag) {
     var replacement = document.createElement(tag);
@@ -21,7 +22,8 @@ window.renameSingle = function (elm, tag) {
 };
 
 
-picture = function () {
+picture = function (debug) {
+    pictureDebug = (debug === true) ? true : false;
     wc_list = [];
     var pictures = document.getElementsByTagName("picture");
     for (var i = 0; i < pictures.length; i++) {
@@ -45,6 +47,7 @@ picture = function () {
                 } else {
                     query += ", " + wc.media;
                 }
+                (pictureDebug ? console.log("Picture #" + (i+1) + ": "+ wc.media) : '');
                 window.renameSingle(sourceElm, "img");
                 wc.addListener(pictureYes);
                 wc_list.push(wc);
@@ -64,6 +67,7 @@ picture = function () {
                     wc_list.push(wc);
                 }
                 window.renameSingle(sourceElm, "img");
+                (pictureDebug ? console.log("Picture #" + (i+1) + ": Default") : '');
                 done = true;
             } else {
                 wc = window.matchMedia(query);
@@ -83,7 +87,8 @@ function pictureYes(y) {
             wc_list[i].removeListener(pictureNo);
             wc_list[i].removeListener(pictureYes);
         }
-        picture();
+        
+        picture(pictureDebug);
     }
     
 }
@@ -95,9 +100,11 @@ function pictureNo(y) {
             wc_list[i].removeListener(pictureNo);
             wc_list[i].removeListener(pictureYes);
         }
-        picture();
+        
+        picture(pictureDebug);
         
     }
    
 }
-picture();
+
+picture(true); //true = debug Mode (in console)

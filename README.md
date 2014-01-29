@@ -1,6 +1,8 @@
 PictureElement
 ==============
 
+Picture Polyfill
+
 ##The HTML Element
 ```html
 <picture>
@@ -9,3 +11,15 @@ PictureElement
     <img src="http://retina-images.complexcompulsions.com/img/settings-small.png" />
 </picture>
 ```
+
+##Browser Support
+* IE 6+
+* Chrome
+* Firefox 3.6+
+* Opera
+* Safari
+* iOS 
+* Android 2.3+
+
+#Using Polyfills
+* https://github.com/weblinc/media-match

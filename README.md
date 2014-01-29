@@ -6,8 +6,8 @@ Picture Polyfill
 ##The HTML Element
 ```html
 <picture>
-    <source srcset="http://retina-images.complexcompulsions.com/img/settings-large.png 500w, http://retina-images.complexcompulsions.com/img/settings-small.png 2x 600w" />
-    <source srcset="http://retina-images.complexcompulsions.com/img/settings-large.png 2x" />
+    <source srcset="http://retina-images.complexcompulsions.com/img/settings-large.png 500w, http://retina-images.complexcompulsions.com/img/settings-small.png 2x 600w" media="(min-height: 500px)" />
+    <source srcset="http://retina-images.complexcompulsions.com/img/settings-large.png 2x"/>
     <img src="http://retina-images.complexcompulsions.com/img/settings-small.png" />
 </picture>
 ```

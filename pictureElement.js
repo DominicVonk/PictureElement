@@ -146,15 +146,20 @@ pictureDebug = false;
 
 						mm.addListener(pictureNo);
 						wc_list.push(mm);
-						(pictureDebug ? console.log("Picture #" + (pictureIndex + 1) + ": Fallback") : '');
+						
 					} else {
 						mm.addListener(pictureYes);
 						wc_list.push(mm);
-						(pictureDebug ? console.log("Picture #" + (pictureIndex + 1) + ": " + mediaQuery) : '');
 					}
 
 					if ((mm.matches && !done) || (innerLength - 1 == sourceIndex && !done)) {
 						var resimg = window.renameSingle(source, "img");
+						if (mediaQuery == "added") {
+							(pictureDebug ? console.log("Picture #" + (pictureIndex + 1) + ": Fallback") : '');
+						}
+						else {
+							(pictureDebug ? console.log("Picture #" + (pictureIndex + 1) + ": " + mediaQuery) : '');
+						}
 						if (getRightImg !== "" && getRightImg !== null) {
 							resimg.setAttribute("src", getRightImg);
 						}

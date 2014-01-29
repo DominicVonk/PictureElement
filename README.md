@@ -24,7 +24,7 @@ Picture Polyfill
 * iOS 
 * Android 2.3+
 
-##You need this
+##Things u need
 * pictureElement.js
 
 ##Embedded Polyfills

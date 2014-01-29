@@ -1,4 +1,4 @@
-PictureElement
+Picture Element
 ==============
 
 Picture Polyfill

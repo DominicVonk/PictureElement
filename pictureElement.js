@@ -1,115 +1,184 @@
 pictureDebug = false;
-(function () {
-    if (typeof (HTMLPictureElement) === "undefined") {
-        if (!window.matchMedia) {
-            window.matchMedia = function (str) {
-                return {
-                    matches: false
-                };
-            };
-        }
-        var wc_list = [];
-        window.renameSingle = function (elm, tag) {
-            var replacement = document.createElement(tag);
+(function() {
+	if (typeof(HTMLPictureElement) === "undefined" && typeof(window.matchMedia) !== "undefined") {
+		var wc_list = [];
+		window.renameSingle = function(elm, tag) {
+			var replacement = document.createElement(tag);
 
-            for (var attribute = 0; attribute < elm.attributes.length; attribute++) {
+			for (var attribute = 0; attribute < elm.attributes.length; attribute++) {
 
-                if (typeof elm.attributes[attribute].value !== "undefined" && typeof elm.attributes[attribute].name !== "undefined" && typeof elm.attributes[attribute].value !== "function") {
-                    replacement.setAttribute(elm.attributes[attribute].name, elm.attributes[attribute].value);
-                }
-            }
+				if (typeof elm.attributes[attribute].value !== "undefined" && typeof elm.attributes[attribute].name !== "undefined" && typeof elm.attributes[attribute].value !== "function") {
+					replacement.setAttribute(elm.attributes[attribute].name, elm.attributes[attribute].value);
+				}
+			}
 
-            elm.parentNode.replaceChild(replacement, elm);
-            return replacement;
-        };
+			elm.parentNode.replaceChild(replacement, elm);
+			return replacement;
+		};
 
+		var each = function(elem, execute) {
+			for (var result = 0; result < elem.length; result++) {
+				execute(result, elem[result], elem.length);
+			}
+		};
 
-        picture = function (debug) {
-            pictureDebug = (debug === true || pictureDebug === true) ? true : false;
-            wc_list = [];
-            var pictures = document.getElementsByTagName("picture");
-            for (var i = 0; i < pictures.length; i++) {
-                var done = false;
-                var query = "";
-                for (var img = 0; img < pictures[i].getElementsByTagName("img").length; img++) {
-                    if (pictures[i].getElementsByTagName("img")[img]) {
-                        window.renameSingle(pictures[i].getElementsByTagName("img")[img], "source");
-                    }
-                }
+		var picture = function(debug) {
+			pictureDebug = (debug === true || pictureDebug === true) ? true : false;
+			wc_list = [];
+			var pictures = document.getElementsByTagName("picture");
+			each(pictures, function(pictureIndex, picture, length) {
+				var done = false;
+				var query = "";
+				each(picture.getElementsByTagName("img"), function(imgIndex, img, innerLength) {
+					if (img.hasAttribute("src") && img.hasAttribute("srcset")) {
+						img.removeAttribute("src");
+					}
+					window.renameSingle(img, "source");
+				});
+				each(picture.getElementsByTagName("source"), function(sourceIndex, source, innerLength) {
+					var getRightImg = null;
+					var mediaQuery = source.hasAttribute("media") ? source.getAttribute("media") : "";
 
-                for (var source = 0; source < pictures[i].getElementsByTagName("source").length; source++) {
-                    var sourceElm = pictures[i].getElementsByTagName("source")[source];
+					if (source.hasAttribute("srcset") && !source.hasAttribute("src")) {
+						getRightImg = "";
+						var oldMediaQuery = mediaQuery;
+						var queries = source.getAttribute("srcset").split(',');
+						each(queries, function(queryIndex, thisQuery, queryLength) {
+							var mediaQuery2 = "";
+							thisQuery = thisQuery.trim().split(' ');
+							if (thisQuery.length == 1) {
+								getRightImg = thisQuery[0];
+							} else if (thisQuery.length == 2) {
+								if (thisQuery[1].substr(-1, 1) == "x") {
+									mediaQuery2 = "(min-resolution: " + thisQuery[1].substr(0, thisQuery[1].length - 1) + "dppx)";
+									if (mediaQuery === "") {
+										if (oldMediaQuery === "") {
+											mediaQuery = mediaQuery2;
+										} else {
+											mediaQuery = oldMediaQuery + " and " + mediaQuery2;
+										}
+									} else {
+										if (oldMediaQuery === "") {
+											mediaQuery += ", " + mediaQuery2;
+										} else {
+											mediaQuery += ", " + oldMediaQuery + " and " + mediaQuery2;
+										}
+									}
+									var test = window.matchMedia(mediaQuery2);
+									if (test.matches) {
+										getRightImg = thisQuery[0];
+									}
+									test.addListener(pictureYes);
+									wc_list.push(test);
+								} else if (thisQuery[1].substr(-1, 1) == "w") {
+									mediaQuery2 = "(min-width: " + thisQuery[1].substr(0, thisQuery[1].length - 1) + "px)";
+									if (mediaQuery === "") {
+										if (oldMediaQuery === "") {
+											mediaQuery = mediaQuery2;
+										} else {
+											mediaQuery = oldMediaQuery + " and " + mediaQuery2;
+										}
+									} else {
+										if (oldMediaQuery === "") {
+											mediaQuery += ", " + mediaQuery2;
+										} else {
+											mediaQuery += ", " + oldMediaQuery + " and " + mediaQuery2;
+										}
+									}
+									var test = window.matchMedia(mediaQuery2);
+									if (test.matches) {
+										getRightImg = thisQuery[0];
+									}
+									test.addListener(pictureYes);
+									wc_list.push(test);
+								}
+							} else if (thisQuery.length == 3) {
 
-                    var wc = sourceElm.hasAttribute("media") ? window.matchMedia(sourceElm.getAttribute("media")) : {
-                        matches: false
-                    };
-                    if (wc.matches && !done) {
-                        if (query === "") {
-                            query += wc.media;
-                        } else {
-                            query += ", " + wc.media;
-                        }
-                        (pictureDebug ? console.log("Picture #" + (i + 1) + ": " + wc.media) : '');
-                        window.renameSingle(sourceElm, "img");
-                        wc.addListener(pictureYes);
-                        wc_list.push(wc);
-                        done = true;
-                    } else if ( !! (wc.media)) {
-                        if (query === "") {
-                            query += wc.media;
-                        } else {
-                            query += ", " + wc.media;
-                        }
-                        wc.addListener(pictureYes);
-                        wc_list.push(wc);
-                    } else if (!done && !sourceElm.hasAttribute("media")) {
-                        wc = window.matchMedia(query);
-                        if ( !! (wc.media)) {
-                            wc.addListener(pictureNo);
-                            wc_list.push(wc);
-                        }
-                        window.renameSingle(sourceElm, "img");
-                        (pictureDebug ? console.log("Picture #" + (i + 1) + ": Default") : '');
-                        done = true;
-                    } else {
-                        wc = window.matchMedia(query);
-                        if ( !! (wc.media)) {
-                            wc.addListener(pictureNo);
-                            wc_list.push(wc);
-                        }
-                    }
+								if (thisQuery[1].substr(-1, 1) == "x") {
+									mediaQuery2 = "(min-resolution: " + thisQuery[1].substr(0, thisQuery[1].length - 1) + "dppx and ";
+								} else if (thisQuery[1].substr(-1, 1) == "w") {
+									mediaQuery2 = "(min-width: " + thisQuery[1].substr(0, thisQuery[1].length - 1) + "px and ";
+								}
+								if (thisQuery[2].substr(-1, 1) == "x") {
+									mediaQuery2 += "min-resolution: " + thisQuery[2].substr(0, thisQuery[2].length - 1) + "dppx)";
+								} else if (thisQuery[2].substr(-1, 1) == "w") {
+									mediaQuery2 += "min-width: " + thisQuery[2].substr(0, thisQuery[2].length - 1) + "px)";
+								}
+								if (mediaQuery === "") {
+									if (oldMediaQuery === "") {
+										mediaQuery = mediaQuery2;
+									} else {
+										mediaQuery = oldMediaQuery + " and " + mediaQuery2;
+									}
+								} else {
+									if (oldMediaQuery === "") {
+										mediaQuery += ", " + mediaQuery2;
+									} else {
+										mediaQuery += ", " + oldMediaQuery + " and " + mediaQuery2;
+									}
+								}
+								var test = window.matchMedia(mediaQuery2);
+								if (test.matches) {
+									getRightImg = thisQuery[0];
+								}
+								test.addListener(pictureYes);
+								wc_list.push(test);
+							}
+						});
+					}
+					
+					if (query === "" && mediaQuery !== "") {
+						query += mediaQuery;
+					} else if (mediaQuery !== "") {
+						query += ", " + mediaQuery;
+					}
+					if (mediaQuery == "") {
+						mediaQuery = "added";
+					}
 
-                }
-            }
-        };
+					var mm = window.matchMedia(mediaQuery == "added" ? query : mediaQuery);
 
-        function pictureYes(y) {
-            if (y.matches) {
-                for (var i = 0; i < wc_list.length; i++) {
-                    wc_list[i].removeListener(pictureNo);
-                    wc_list[i].removeListener(pictureYes);
-                }
+					if (mediaQuery == "added") {
 
-                picture(pictureDebug);
-            }
+						mm.addListener(pictureNo);
+						wc_list.push(mm);
+						(pictureDebug ? console.log("Picture #" + (i + 1) + ": Fallback") : '');
+					} else {
+						mm.addListener(pictureYes);
+						wc_list.push(mm);
+						(pictureDebug ? console.log("Picture #" + (i + 1) + ": " + mediaQuery) : '');
+					}
 
-        }
+					if ((mm.matches && !done) || (innerLength - 1 == sourceIndex && !done)) {
+						var resimg = window.renameSingle(source, "img");
+						if (getRightImg !== "" && getRightImg !== null) {
+							resimg.setAttribute("src", getRightImg);
+						}
+						done = true;
 
-        function pictureNo(y) {
+					}
+				});
+			});
+		};
+		var pictureYes = function(y) {
+			if (y.matches) {
+				for (var i = 0; i < wc_list.length; i++) {
+					wc_list[i].removeListener(pictureNo);
+					wc_list[i].removeListener(pictureYes);
+				}
+				picture(pictureDebug);
+			}
+		};
+		var pictureNo = function(y) {
 
-            if (!y.matches) {
-                for (var i = 0; i < wc_list.length; i++) {
-                    wc_list[i].removeListener(pictureNo);
-                    wc_list[i].removeListener(pictureYes);
-                }
-
-                picture(pictureDebug);
-
-            }
-
-        }
-
-        picture(pictureDebug); //true = debug Mode (in console)
-    }
-
+			if (!y.matches) {
+				for (var i = 0; i < wc_list.length; i++) {
+					wc_list[i].removeListener(pictureNo);
+					wc_list[i].removeListener(pictureYes);
+				}
+				picture(pictureDebug);
+			}
+		};
+		picture(pictureDebug); //true = debug Mode (in console)
+	}
 })();

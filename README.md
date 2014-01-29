@@ -21,5 +21,8 @@ Picture Polyfill
 * iOS 
 * Android 2.3+
 
-#Using Polyfills
+##You need this
+* pictureElement.js
+
+##Using Polyfills
 * https://github.com/weblinc/media-match

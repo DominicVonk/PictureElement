@@ -174,6 +174,13 @@ media:a,addListener:function(a){l[c].listeners||(l[c].listeners=[]);a&&l[c].list
 			}
 			picture();
 		});
+		window.addEventListener("orientationchange", function() {
+			for (var i = 0; i < wc_list.length; i++) {
+				wc_list[i].removeListener(pictureNo);
+				wc_list[i].removeListener(pictureYes);
+			}
+			picture();
+		});
 		var pictureYes = function(y) {
 			if (y.matches) {
 				for (var i = 0; i < wc_list.length; i++) {

@@ -160,13 +160,13 @@ pictureDebug = false;
 				});
 			});
 		};
-		window.onresize = function() {
+		window.addEventListener("resize", function() {
 			for (var i = 0; i < wc_list.length; i++) {
 				wc_list[i].removeListener(pictureNo);
 				wc_list[i].removeListener(pictureYes);
 			}
 			picture(pictureDebug);
-		};
+		});
 		var pictureYes = function(y) {
 			if (y.matches) {
 				for (var i = 0; i < wc_list.length; i++) {

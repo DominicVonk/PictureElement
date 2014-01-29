@@ -95,15 +95,16 @@ pictureDebug = false;
 							} else if (thisQuery.length == 3) {
 
 								if (thisQuery[1].substr(-1, 1) == "x") {
-									mediaQuery2 = "(min-resolution: " + thisQuery[1].substr(0, thisQuery[1].length - 1) + "dppx and ";
+									mediaQuery2 = "(min-resolution: " + thisQuery[1].substr(0, thisQuery[1].length - 1) + "dppx) and ";
 								} else if (thisQuery[1].substr(-1, 1) == "w") {
-									mediaQuery2 = "(min-width: " + thisQuery[1].substr(0, thisQuery[1].length - 1) + "px and ";
+									mediaQuery2 = "(min-width: " + thisQuery[1].substr(0, thisQuery[1].length - 1) + "px) and ";
 								}
 								if (thisQuery[2].substr(-1, 1) == "x") {
-									mediaQuery2 += "min-resolution: " + thisQuery[2].substr(0, thisQuery[2].length - 1) + "dppx)";
+									mediaQuery2 += "(min-resolution: " + thisQuery[2].substr(0, thisQuery[2].length - 1) + "dppx)";
 								} else if (thisQuery[2].substr(-1, 1) == "w") {
-									mediaQuery2 += "min-width: " + thisQuery[2].substr(0, thisQuery[2].length - 1) + "px)";
+									mediaQuery2 += "(min-width: " + thisQuery[2].substr(0, thisQuery[2].length - 1) + "px)";
 								}
+								
 								if (mediaQuery === "") {
 									if (oldMediaQuery === "") {
 										mediaQuery = mediaQuery2;
@@ -117,8 +118,11 @@ pictureDebug = false;
 										mediaQuery += ", " + oldMediaQuery + " and " + mediaQuery2;
 									}
 								}
+								
 								var test = window.matchMedia(mediaQuery2);
+
 								if (test.matches) {
+									
 									getRightImg = thisQuery[0];
 								}
 								test.addListener(pictureYes);

@@ -143,11 +143,10 @@ media:a,addListener:function(a){l[c].listeners||(l[c].listeners=[]);a&&l[c].list
 					if (mediaQuery == "") {
 						mediaQuery = "added";
 					}
-
+					
 					var mm = window.matchMedia(mediaQuery == "added" ? query : mediaQuery);
-
+					
 					if (mediaQuery == "added") {
-
 						mm.addListener(pictureNo);
 						wc_list.push(mm);
 						
@@ -155,8 +154,9 @@ media:a,addListener:function(a){l[c].listeners||(l[c].listeners=[]);a&&l[c].list
 						mm.addListener(pictureYes);
 						wc_list.push(mm);
 					}
-
-					if ((mm.matches && !done) || (innerLength - 1 == sourceIndex && !done)) {
+					
+					if ((mm.matches && (getRightImg !== "" || getRightImg === null) && !done) || (innerLength - 1 == sourceIndex && !done)) {
+						
 						var resimg = window.renameSingle(source, "img");
 						if (getRightImg !== "" && getRightImg !== null) {
 							resimg.setAttribute("src", getRightImg);

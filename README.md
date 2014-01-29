@@ -27,5 +27,5 @@ Picture Polyfill
 ##You need this
 * pictureElement.js
 
-##Using Polyfills
+##Embedded Polyfills
 * https://github.com/weblinc/media-match

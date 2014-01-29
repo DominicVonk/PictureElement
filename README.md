@@ -4,8 +4,8 @@ PictureElement
 ##The HTML Element
 ```html
 <picture>
-    <source src="http://retina-images.complexcompulsions.com/img/settings-large.png" media="(min-width : 500px)" />
-    <source src="http://retina-images.complexcompulsions.com/img/settings-large.png" media="(min-resolution : 2dppx)" />
+    <source srcset="http://retina-images.complexcompulsions.com/img/settings-large.png 500w, http://retina-images.complexcompulsions.com/img/settings-small.png 600w" />
+    <source srcset="http://retina-images.complexcompulsions.com/img/settings-large.png 2x" />
     <img src="http://retina-images.complexcompulsions.com/img/settings-small.png" />
 </picture>
 ```

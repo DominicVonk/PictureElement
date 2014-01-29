@@ -146,11 +146,11 @@ pictureDebug = false;
 
 						mm.addListener(pictureNo);
 						wc_list.push(mm);
-						(pictureDebug ? console.log("Picture #" + (i + 1) + ": Fallback") : '');
+						(pictureDebug ? console.log("Picture #" + (pictureIndex + 1) + ": Fallback") : '');
 					} else {
 						mm.addListener(pictureYes);
 						wc_list.push(mm);
-						(pictureDebug ? console.log("Picture #" + (i + 1) + ": " + mediaQuery) : '');
+						(pictureDebug ? console.log("Picture #" + (pictureIndex + 1) + ": " + mediaQuery) : '');
 					}
 
 					if ((mm.matches && !done) || (innerLength - 1 == sourceIndex && !done)) {

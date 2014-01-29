@@ -12,6 +12,9 @@ Picture Polyfill
 </picture>
 ```
 
+##DEMO
+http://jsfiddle.net/dPE3s/11/embedded/result/
+
 ##Browser Support
 * IE 6+
 * Chrome

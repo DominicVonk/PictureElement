@@ -1,4 +1,3 @@
-pictureDebug = false;
 (function() {
 	if (typeof(HTMLPictureElement) === "undefined" && typeof(window.matchMedia) !== "undefined") {
 		var wc_list = [];
@@ -22,8 +21,7 @@ pictureDebug = false;
 			}
 		};
 
-		var picture = function(debug) {
-			pictureDebug = (debug === true || pictureDebug === true) ? true : false;
+		var picture = function() {
 			wc_list = [];
 			var pictures = document.getElementsByTagName("picture");
 			each(pictures, function(pictureIndex, picture, length) {
@@ -154,12 +152,6 @@ pictureDebug = false;
 
 					if ((mm.matches && !done) || (innerLength - 1 == sourceIndex && !done)) {
 						var resimg = window.renameSingle(source, "img");
-						if (mediaQuery == "added") {
-							(pictureDebug ? console.log("Picture #" + (pictureIndex + 1) + ": Fallback") : '');
-						}
-						else {
-							(pictureDebug ? console.log("Picture #" + (pictureIndex + 1) + ": " + mediaQuery) : '');
-						}
 						if (getRightImg !== "" && getRightImg !== null) {
 							resimg.setAttribute("src", getRightImg);
 						}
@@ -174,7 +166,7 @@ pictureDebug = false;
 				wc_list[i].removeListener(pictureNo);
 				wc_list[i].removeListener(pictureYes);
 			}
-			picture(pictureDebug);
+			picture();
 		});
 		var pictureYes = function(y) {
 			if (y.matches) {
@@ -182,7 +174,7 @@ pictureDebug = false;
 					wc_list[i].removeListener(pictureNo);
 					wc_list[i].removeListener(pictureYes);
 				}
-				picture(pictureDebug);
+				picture();
 			}
 		};
 		var pictureNo = function(y) {
@@ -192,9 +184,9 @@ pictureDebug = false;
 					wc_list[i].removeListener(pictureNo);
 					wc_list[i].removeListener(pictureYes);
 				}
-				picture(pictureDebug);
+				picture();
 			}
 		};
-		picture(pictureDebug); //true = debug Mode (in console)
+		picture(); //true = debug Mode (in console)
 	}
 })();

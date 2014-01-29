@@ -12,8 +12,8 @@ Picture Polyfill
 </picture>
 ```
 
-##DEMO
-http://jsfiddle.net/dPE3s/11/embedded/result/
+##Picture Element Demo
+ * http://shum.nl/pictureelement
 
 ##Browser Support
 * IE 6+
